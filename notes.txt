@@ -1,0 +1,74 @@
+wav is a type of rif file
+rif includes audio, video, etc
+when you open up a wav, it opens up as a rif file, then after that it is asked what type of rif file it is
+the file will respond "I am a wav file" or "I am a avi file" etc
+The first 4 bytes that you get are ascii RIFF
+next 4, 32 bit number, how long is the rest of the file
+riff files are cool because you can add metadata and stuff, and chunks will be skipped automatically if the player cant display or understand it
+so if i have a metadata tag of year, and i access it on a weird pc from 1988 that doesnt support metadata, then itll still be fine and just skip that
+wav is also a chunk
+within the wav chunk, there are:
+
+1. format
+2. data
+
+different sizes of format 
+
+data-4 bytes for the length of the data chunk
+
+
+if the length of the format is x, then the type of wave is:
+[x: type]
+14: waveformat
+16: pcmwaveformat
+18: waveformatex
+
+
+LAYOUT 
+
+riff chunk {
+
+   wav chunk{
+
+      format{
+
+      }
+
+      data{
+
+      }
+   }
+}
+
+vscode hexeditor (use big endian) int32 is the value of the next 4 hex values, idk if that makes sense 
+
+wave files are little endian 
+
+r, hex 52, 
+
+first 4 bytes are RIFF (RIFF_4CC)
+next 4 bytes (length) [how many more bytes] (Length)
+next is 4 bytes of the RIFF type: WAVE (Wave_4CC)
+next 4 bytes: "fmt " (Format_4CC)
+next 4 bytes: length of format chunk (Format_Length)
+next 2 bytes: the format of the audio:
+               integer type
+               floating point type
+               etc
+               (usually 0 or 3 [integer or float])
+next 2 bytes: the number of channels
+next 4 bytes: frame rate (sample rate, "Samplerate * channels == sample rate" [its dumb but its a missnomer])
+next 4 bytes: average bytes per second (since wav is uncompressed, this is pretty redundant [bitspersample * channels * frame rate])
+next 2 bytes: frame size (how many bytes total in each snapshot of audio) [16 bit audio at 4 channels has a frame size of 8 bytes (2 bytes per sample * 4 channels)]
+(if format is > 14)
+next 2 bytes: bytes per sample (probably 16, maybe 8 if its old, 24 is possible but its kinda confusing (will come back to later)
+but if floating point instead of int than it is 32)
+(if format is > 16)
+next 2 bytes: how many more bytes (count of bytes) after this of additional format information is there 
+(if there is extra data then it goes){
+   next 2 bytes: valid bits per sample 
+   next 4 bytes: channel mask (each bit is a channel in space (left, center, behind to the left, etc) puts the channels into a 3d space (locates the channels))
+   next 16 bytes: subformat 
+}
+
+[Format chunk]
