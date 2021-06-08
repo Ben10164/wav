@@ -1,0 +1,19 @@
+9 questions:
+
+1. is this a riff file
+
+2. does the length of the file match the size of the file
+
+3. what kind of riff file is this / is this a wav file
+
+4. whats the format length / what does that imply (type of wav format)
+
+5. what is the format tag (2 byte field)
+
+6. how many channels are there
+
+7. whats the frame rate 
+
+8. how many bits per sample (not bits per frame)
+
+9. any other subchunks in the file 
