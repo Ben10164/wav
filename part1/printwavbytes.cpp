@@ -20,15 +20,17 @@ void displayNextBytesHex(ifstream &is, int amount);
 string getNextBytesHexString(ifstream &is, int amount);
 string convertToString(unsigned char *chunk, int amount);
 
+unsigned int convertStringHexToInt(string hex, int amount);
+
 int main(int argc, char *argv[])
 {
    ifstream is;
    is.open("bt.wav"); // openb file
 
-   displayNextBytesStr(is, 4); // RIFF
-   displayNextBytesHex(is, 4); // how many more bytes
-   displayNextBytesStr(is, 4);
-   displayNextBytesStr(is, 4);
+   cout << "RIFF check: " << getNextBytesString(is, 4) << endl;
+   cout << "Length of data: " << convertStringHexToInt(getNextBytesHexString(is, 4), 8) << endl;
+   cout << "RIFF type: " << getNextBytesString(is, 4) << endl;
+   cout << "fmt check: " << getNextBytesString(is, 4) << endl;
 }
 
 void displayNextBytesStr(ifstream &is, int amount)
@@ -39,7 +41,8 @@ void displayNextBytesStr(ifstream &is, int amount)
 
 string getNextBytesString(ifstream &is, int amount)
 {
-   unsigned char chunk[amount];
+   unsigned char chunk[amount + 1];
+   chunk[amount] = '\0';
    is.read(reinterpret_cast<char *>(chunk), amount);
    string returnVal;
    returnVal = (string) reinterpret_cast<char *>(chunk);
@@ -71,4 +74,10 @@ string convertToString(unsigned char *chunk, int amount)
    }
    string hexVal = ss.str();
    return hexVal;
+}
+
+unsigned int convertStringHexToInt(string hexString, int amount)
+{
+   unsigned int temp = stol("ffffffff", 0, 16);
+   return temp;
 }
