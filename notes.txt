@@ -19,10 +19,11 @@ data-4 bytes for the length of the data chunk
 
 if the length of the format is x, then the type of wave is:
 [x: type]
+(ALL CAPS)
 14: waveformat
 16: pcmwaveformat
 18: waveformatex
-
+> 18: waveformatextensible
 
 LAYOUT 
 
@@ -55,13 +56,15 @@ next 2 bytes: the format of the audio:
                integer type
                floating point type
                etc
-               (usually 0 or 3 [integer or float])
+               (usually 1 or 3 [integer or float])
+               2 is ADPCM
+               0 is WAVEFMTUNKNOWN?
 next 2 bytes: the number of channels
 next 4 bytes: frame rate (sample rate, "Samplerate * channels == sample rate" [its dumb but its a missnomer])
 next 4 bytes: average bytes per second (since wav is uncompressed, this is pretty redundant [bitspersample * channels * frame rate])
 next 2 bytes: frame size (how many bytes total in each snapshot of audio) [16 bit audio at 4 channels has a frame size of 8 bytes (2 bytes per sample * 4 channels)]
 (if format is > 14)
-next 2 bytes: bytes per sample (probably 16, maybe 8 if its old, 24 is possible but its kinda confusing (will come back to later)
+next 2 bytes: bits per sample (probably 16, maybe 8 if its old, 24 is possible but its kinda confusing (will come back to later)
 but if floating point instead of int than it is 32)
 (if format is > 16)
 next 2 bytes: how many more bytes (count of bytes) after this of additional format information is there 

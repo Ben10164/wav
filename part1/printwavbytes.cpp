@@ -24,13 +24,49 @@ unsigned int getNextBytesHexInt(ifstream &is, int amount);
 
 int main(int argc, char *argv[])
 {
+   string RIFFCheck, RIFFType, fmtCheck;
+   uint totalLen, chunkLen, audioFormat, audioChannels, frameRate, avgBytesPerSecond, frameSize, bitsPerSample;
    ifstream is;
    is.open("bt.wav"); // open file
 
-   cout << "RIFF check: " << getNextBytesString(is, 4) << endl;
-   cout << "Length of data: " << getNextBytesHexInt(is, 4) << endl;
-   cout << "RIFF type: " << getNextBytesString(is, 4) << endl;
-   cout << "fmt check: " << getNextBytesString(is, 4) << endl;
+   RIFFCheck = getNextBytesString(is, 4);
+   cout << "RIFF check: " << RIFFCheck << endl;
+
+   totalLen = getNextBytesHexInt(is, 4);
+   unsigned short _byteswap_ushort(totalLen);
+   cout << "Length of all data: " << totalLen << endl;
+
+   RIFFType = getNextBytesString(is, 4);
+   cout << "RIFF type: " << RIFFType << endl;
+
+   fmtCheck = getNextBytesString(is, 4);
+   cout << "fmt check: '" << fmtCheck << "'" << endl;
+
+   chunkLen = getNextBytesHexInt(is, 4);
+   cout << "Length of format chunk: " << chunkLen << endl;
+   // put the type here as well
+   //
+   //
+   //
+
+   audioFormat = getNextBytesHexInt(is, 2);
+   cout << "Format of the audio: " << audioFormat << endl;
+   // TRASH = getNextBytesString(is, 1); // before when i was using big endian
+
+   audioChannels = getNextBytesHexInt(is, 2);
+   cout << "Number of audio channels: " << audioChannels << endl;
+
+   frameRate = getNextBytesHexInt(is, 4);
+   cout << "Frame Rate: " << frameRate << endl;
+
+   avgBytesPerSecond = getNextBytesHexInt(is, 4);
+   cout << "Average bytes per second: " << avgBytesPerSecond << endl;
+
+   frameSize = getNextBytesHexInt(is, 2);
+   cout << "Frame size: " << frameSize << endl;
+
+   bitsPerSample = getNextBytesHexInt(is, 2);
+   cout << "Bits per sample: " << bitsPerSample << endl;
 }
 
 void displayNextBytesStr(ifstream &is, int amount)
@@ -67,7 +103,7 @@ string convertToString(unsigned char *chunk, int amount)
 {
    stringstream ss;                                     // new stringstream
    ss << hex << setfill('0');                           // this sets the string string to default have all 0s
-   for (int i = 0; i < amount; ++i)                     // start for loop going up to the amount
+   for (int i = amount - 1; i >= 0; --i)                // start for loop going up to the amount
       ss << setw(2) << static_cast<unsigned>(chunk[i]); // setw(2) makes it so instead of 000000F9 we get F9
    string hexVal = ss.str();                            // use the built in cast from stringstream to string
    return hexVal;                                       // return
