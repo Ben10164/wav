@@ -15,12 +15,14 @@ using namespace std;
 void displayNextBytesStr(ifstream &is, int amount);
 string getNextBytesString(ifstream &is, int amount);
 
-// other stuff
+// Hex to string
 void displayNextBytesHex(ifstream &is, int amount);
 string getNextBytesHexString(ifstream &is, int amount);
 string convertToString(unsigned char *chunk, int amount);
 
+// string to int
 unsigned int convertStringHexToInt(string hex, int amount);
+unsigned int getNextBytesHexInt(ifstream &is, int amount);
 
 int main(int argc, char *argv[])
 {
@@ -28,7 +30,7 @@ int main(int argc, char *argv[])
    is.open("bt.wav"); // openb file
 
    cout << "RIFF check: " << getNextBytesString(is, 4) << endl;
-   cout << "Length of data: " << convertStringHexToInt(getNextBytesHexString(is, 4), 8) << endl;
+   cout << "Length of data: " << getNextBytesHexInt(is, 4) << endl;
    cout << "RIFF type: " << getNextBytesString(is, 4) << endl;
    cout << "fmt check: " << getNextBytesString(is, 4) << endl;
 }
@@ -79,5 +81,11 @@ string convertToString(unsigned char *chunk, int amount)
 unsigned int convertStringHexToInt(string hexString, int amount)
 {
    unsigned int temp = stol("ffffffff", 0, 16);
+   return temp;
+}
+
+unsigned int getNextBytesHexInt(ifstream &is, int amount)
+{
+   unsigned int temp = convertStringHexToInt(getNextBytesHexString(is, amount), amount * 2);
    return temp;
 }
