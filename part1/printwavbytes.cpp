@@ -24,8 +24,8 @@ unsigned int getNextBytesHexInt(ifstream &is, int amount);
 
 int main(int argc, char *argv[])
 {
-   string RIFFCheck, RIFFType, fmtCheck;
-   uint totalLen, chunkLen, audioFormat, audioChannels, frameRate, avgBytesPerSecond, frameSize, bitsPerSample;
+   string RIFFCheck, RIFFType, fmtCheck, typeOfWAV = "";
+   uint totalLen, fmtChunkLen, audioFormat, audioChannels, frameRate, avgBytesPerSecond, frameSize, bitsPerSample;
    ifstream is;
    is.open("bt.wav"); // open file
 
@@ -42,12 +42,18 @@ int main(int argc, char *argv[])
    fmtCheck = getNextBytesString(is, 4);
    cout << "fmt check: '" << fmtCheck << "'" << endl;
 
-   chunkLen = getNextBytesHexInt(is, 4);
-   cout << "Length of format chunk: " << chunkLen << endl;
-   // put the type here as well
-   //
-   //
-   //
+   fmtChunkLen = getNextBytesHexInt(is, 4);
+   cout << "Length of format chunk: " << fmtChunkLen << endl;
+
+   if (fmtChunkLen == 14)
+      typeOfWAV = "WAVEFORMAT";
+   else if (fmtChunkLen == 16)
+      typeOfWAV = "PCMWAVEFORMAT";
+   else if (fmtChunkLen == 18)
+      typeOfWAV = "WAVEFORMATEX";
+   else if (fmtChunkLen > 18 && fmtChunkLen % 2 == 0)
+      typeOfWAV = "WAVEFORMATEXTENSIBLE";
+   cout << "Type of wave format: " << typeOfWAV << endl;
 
    audioFormat = getNextBytesHexInt(is, 2);
    cout << "Format of the audio: " << audioFormat << endl;
