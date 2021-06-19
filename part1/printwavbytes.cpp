@@ -24,10 +24,22 @@ unsigned int getNextBytesHexInt(ifstream &is, int amount);
 
 int main(int argc, char *argv[])
 {
-   string RIFFCheck, RIFFType, fmtCheck, typeOfWAV = "";
+   string RIFFCheck, RIFFType, fmtCheck, typeOfWAV = "", fileName = "bt.wav";
    uint totalLen, fmtChunkLen, audioFormat, audioChannels, frameRate, avgBytesPerSecond, frameSize, bitsPerSample;
    ifstream is;
-   is.open("bt.wav"); // open file
+
+   if (argc > 1) // check and see if there was a custom file name
+   {
+      fileName = argv[1];
+   }
+
+   is.open(fileName); // open file
+
+   if (!is.is_open())
+   {
+      cout << "The file named " << fileName << " has not been opened correctly" << endl;
+      return 0;
+   }
 
    RIFFCheck = getNextBytesString(is, 4);
    cout << "RIFF check: " << RIFFCheck << endl;
